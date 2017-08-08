@@ -1,5 +1,9 @@
-exports.initialize = function (onsucceed, onerror) {
-	cordova.exec(onsucceed, onerror, "Callback", "initialize", []);
+exports.initialize = function (callback) {
+	cordova.exec(function (call) {
+		callback[call.name](call.argument, function (argument) {
+			cordova.exec(undefined, undefined, "Callback", "onsucceed", [call.id, argument]);
+		});
+	}, undefined, "Callback", "initialize", []);
 };
 exports.start = function (onsucceed, onerror) {
 	cordova.exec(onsucceed, onerror, "Callback", "start", []);
