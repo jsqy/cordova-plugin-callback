@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="cordova-plugin-callback" version="0.0.0">
+	<js-module src="callback.js" name="callback">
+		<clobbers target="callback" />
+	</js-module>
+	<platform name="android">
+		<config-file target="config.xml" parent="/*">
+			<feature name="Callback">
+				<param name="android-package" value="com.youbanban.cordova.plugin.Callback"/>
+			</feature>
+		</config-file>
+		<source-file src="src/android/Callback.java" target-dir="src/com/youbanban/cordova/plugin" />
+	</platform>
+</plugin>
