@@ -32,6 +32,12 @@ public boolean execute(String action, JSONArray args, CallbackContext callbackCo
 		this.onsucceed(id, arg);
 		return true;
 	}
+	else if (action.equals("onerror")) {
+		int id = args.getInt(0);
+		Object arg = args.get(1);
+		this.onerror(id, arg);
+		return true;
+	}
 	return false;
 }
 
@@ -44,6 +50,9 @@ private void start() {
 			Callback.this.call("f", 0, new Callable(){
 				@Override
 				public void call(Object argument) { }
+			}, new Callable(){
+				@Override
+				public void call(Object argument) { }
 			});
 			} catch (Exception e) { }
 		}
@@ -54,11 +63,19 @@ interface Callable {
 	void call(Object argument);
 }
 
+class Context {
+	public Callable onsucceed;
+	public Callable onerror;
+}
+
 int id = 0;
-HashMap<Integer, Callable> callback = new HashMap<Integer, Callable>();
-void call(String name, Object argument, Callable callback) throws JSONException {
+HashMap<Integer, Context> context = new HashMap<Integer, Context>();
+void call(String name, Object argument, Callable onsucceed, Callable onerror) throws JSONException {
+	Context context = new Context();
+	context.onsucceed = onsucceed;
+	context.onerror = onerror;
 	int id = this.id++;
-	this.callback.put(id, callback);
+	this.context.put(id, context);
 	JSONObject call = new JSONObject();
 	call.put("name", name);
 	call.put("argument", argument);
@@ -69,8 +86,14 @@ void call(String name, Object argument, Callable callback) throws JSONException 
 }
 
 void onsucceed(int id, Object argument) {
-	Callable callback = this.callback.get(id);
-	this.callback.remove(id);
+	Callable callback = this.context.get(id).onsucceed;
+	this.context.remove(id);
+	callback.call(argument);
+}
+
+void onerror(int id, Object argument) {
+	Callable callback = this.context.get(id).onerror;
+	this.context.remove(id);
 	callback.call(argument);
 }
 
