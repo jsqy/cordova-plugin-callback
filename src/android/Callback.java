@@ -49,10 +49,26 @@ private void start() {
 			try {
 			Callback.this.call("f", 0, new Callable(){
 				@Override
-				public void call(Object argument) { }
+				public void call(Object argument) {
+					try {
+					Callback.this.call("g", 0, new Callable(){
+						@Override
+						public void call(Object argument) {
+						}
+					}, null);
+					} catch (Exception e) { }
+				}
 			}, new Callable(){
 				@Override
-				public void call(Object argument) { }
+				public void call(Object argument) {
+					try {
+					Callback.this.call("h", 0, new Callable(){
+						@Override
+						public void call(Object argument) {
+						}
+					}, null);
+					} catch (Exception e) { }
+				}
 			});
 			} catch (Exception e) { }
 		}
@@ -95,6 +111,15 @@ void onerror(int id, Object argument) {
 	Callable callback = this.context.get(id).onerror;
 	this.context.remove(id);
 	callback.call(argument);
+}
+
+void notify(String name, Object argument) throws JSONException {
+	JSONObject event = new JSONObject();
+	event.put("name", name);
+	event.put("argument", argument);
+	PluginResult result = new PluginResult(PluginResult.Status.ERROR, event);
+	result.setKeepCallback(true);
+	callbackContext.sendPluginResult(result);
 }
 
 }
