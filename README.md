@@ -6,17 +6,17 @@ This plugin demonstrates a machanism to call js functions from native.
 
 Register functions to be exposed to native. The argument is a map of functions.
 
-Functions are in form `function(argument,onsucceed,onerror);`. They accept single argument and use callbacks to return results or errors.
+Functions are in form `function(argument, onsucceed, onerror);`. They accept single argument and use callbacks to return results or errors.
 
 ```js
 callback.initialize({
-	f:function(argument,onsucceed,onerror){
+	f: function(argument, onsucceed, onerror){
 		if(..)
 			onsucceed(..);
 		else
 			onerror("error");
 	},
-	g:..
+	g: ..
 });
 ```
 
